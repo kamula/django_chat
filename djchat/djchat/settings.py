@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # external apps
     "drf_spectacular",
+    "rest_framework",
     # internal apps
     "account",
     "server",
@@ -127,7 +128,7 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_AUTHENTICATION_CLASS": [
         "rest_framework.authentication.SessionAuthentication",
-        ],
+    ],
 }
 SPECTACULAR_SETTINGS = {
     "TITLE": "Your Project API",
