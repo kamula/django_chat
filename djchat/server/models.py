@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.dispatch import receiver
+from .validators import validate_icon_image_size
 
 
 def server_icon_upload_path(instance, filename):
@@ -57,7 +58,9 @@ class Channel(models.Model):
     topic = models.CharField(max_length=100)
     server = models.ForeignKey(Server, on_delete=models.CASCADE, related_name="channel_server")
     banner = models.ImageField(upload_to=server_banner_upload_path, null=True, blank=True)
-    icon = models.ImageField(upload_to=server_icon_upload_path, null=True, blank=True)
+    icon = models.ImageField(
+        upload_to=server_icon_upload_path, null=True, blank=True, validators=[validate_icon_image_size]
+    )
 
     # def save(self, *args, **kwargs):
     #     self.name = self.name.lower()
@@ -74,7 +77,7 @@ class Channel(models.Model):
     @receiver(models.signals.pre_delete, sender="server.Server")
     def category_delete_files(sender, instance, **kwargs):
         for field in instance._meta.fields:
-            if field.name == "icon" or field.name == 'banner':
+            if field.name == "icon" or field.name == "banner":
                 file = getattr(instance, field.name)
                 if file:
                     file.delete(save=False)
